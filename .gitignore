@@ -1,0 +1,52 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.dll
+*.exe
+*.pdb
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Bb]uild/
+bld/
+[Bb]in/
+[Oo]bj/
+
+## Storage
+storage/
+dev-storage/
+storage-data/
+**/storage/
+test-data/
+
+## IDEs
+.vs/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+## OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+## Logs
+*.log
+logs/
+
+## NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+
+## Test Results
+TestResults/
+*.trx
+*.coverage
