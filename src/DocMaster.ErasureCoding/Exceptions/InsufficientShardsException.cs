@@ -1,4 +1,6 @@
-namespace DocMaster.ErasureCoding;
+using System;
+
+namespace DocMaster.ErasureCoding.Exceptions;
 
 /// <summary>
 /// Exception thrown when not enough shards are available to decode

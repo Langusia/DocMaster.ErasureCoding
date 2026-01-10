@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text.Json;
 using DocMaster.ErasureCoding;
+using DocMaster.ErasureCoding.Exceptions;
 using DocMaster.ErasureCoding.TestApi.Models;
 using Microsoft.Extensions.Options;
 

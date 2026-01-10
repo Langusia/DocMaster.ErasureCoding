@@ -1,6 +1,7 @@
 using System;
 using System.Buffers;
 using System.Runtime.InteropServices;
+using DocMaster.ErasureCoding.Exceptions;
 
 namespace DocMaster.ErasureCoding;
 
