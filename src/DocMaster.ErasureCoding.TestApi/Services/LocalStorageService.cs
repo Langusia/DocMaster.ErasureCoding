@@ -30,6 +30,23 @@ public class LocalStorageService : IStorageService
         }
     }
 
+    /// <summary>
+    /// Generates a shard filename that differentiates between data and parity shards.
+    /// Data shards: data-shard-0, data-shard-1, ...
+    /// Parity shards: parity-shard-0, parity-shard-1, ...
+    /// </summary>
+    private string GetShardFilename(int shardIndex, int dataShards)
+    {
+        if (shardIndex < dataShards)
+        {
+            return $"data-shard-{shardIndex}";
+        }
+        else
+        {
+            return $"parity-shard-{shardIndex - dataShards}";
+        }
+    }
+
     public async Task StoreFileAsync(string filename, byte[] data)
     {
         var fileDir = Path.Combine(_basePath, filename);
@@ -46,7 +63,7 @@ public class LocalStorageService : IStorageService
         for (int i = 0; i < result.Shards.Length; i++)
         {
             await File.WriteAllBytesAsync(
-                Path.Combine(fileDir, $"shard{i}"),
+                Path.Combine(fileDir, GetShardFilename(i, result.DataShards)),
                 result.Shards[i]
             );
         }
@@ -54,7 +71,7 @@ public class LocalStorageService : IStorageService
         // Verify shards after write
         for (int i = 0; i < result.Shards.Length; i++)
         {
-            var writtenData = await File.ReadAllBytesAsync(Path.Combine(fileDir, $"shard{i}"));
+            var writtenData = await File.ReadAllBytesAsync(Path.Combine(fileDir, GetShardFilename(i, result.DataShards)));
             var checksum = Convert.ToHexString(SHA256.HashData(writtenData));
 
             if (checksum != result.ShardChecksums[i])
@@ -106,7 +123,7 @@ public class LocalStorageService : IStorageService
 
         for (int i = 0; i < _erasureCoder.TotalShards; i++)
         {
-            var shardPath = Path.Combine(fileDir, $"shard{i}");
+            var shardPath = Path.Combine(fileDir, GetShardFilename(i, metadata.DataShards));
 
             if (File.Exists(shardPath))
             {
@@ -202,22 +219,25 @@ public class LocalStorageService : IStorageService
         return Task.CompletedTask;
     }
 
-    public Task DeleteShardAsync(string filename, int shardIndex)
+    public async Task DeleteShardAsync(string filename, int shardIndex)
     {
         var fileDir = Path.Combine(_basePath, filename);
 
         if (!Directory.Exists(fileDir))
             throw new FileNotFoundException($"File not found: {filename}");
 
-        var shardPath = Path.Combine(fileDir, $"shard{shardIndex}");
+        // Load metadata to determine shard type
+        var metadataJson = await File.ReadAllTextAsync(Path.Combine(fileDir, "metadata.json"));
+        var metadata = JsonSerializer.Deserialize<FileMetadata>(metadataJson)
+            ?? throw new InvalidOperationException("Invalid metadata");
+
+        var shardPath = Path.Combine(fileDir, GetShardFilename(shardIndex, metadata.DataShards));
 
         if (File.Exists(shardPath))
         {
             File.Delete(shardPath);
             _logger.LogInformation("Deleted shard {Index} for {Filename}", shardIndex, filename);
         }
-
-        return Task.CompletedTask;
     }
 
     public async Task<object> HealFileAsync(string filename)
@@ -240,7 +260,7 @@ public class LocalStorageService : IStorageService
 
         for (int i = 0; i < _erasureCoder.TotalShards; i++)
         {
-            var shardPath = Path.Combine(fileDir, $"shard{i}");
+            var shardPath = Path.Combine(fileDir, GetShardFilename(i, metadata.DataShards));
 
             if (File.Exists(shardPath))
             {
@@ -286,7 +306,7 @@ public class LocalStorageService : IStorageService
         foreach (var index in missingIndices)
         {
             await File.WriteAllBytesAsync(
-                Path.Combine(fileDir, $"shard{index}"),
+                Path.Combine(fileDir, GetShardFilename(index, metadata.DataShards)),
                 newResult.Shards[index]
             );
             healedCount++;
@@ -323,7 +343,7 @@ public class LocalStorageService : IStorageService
 
         for (int i = 0; i < _erasureCoder.TotalShards; i++)
         {
-            var shardPath = Path.Combine(fileDir, $"shard{i}");
+            var shardPath = Path.Combine(fileDir, GetShardFilename(i, metadata.DataShards));
             bool exists = File.Exists(shardPath);
 
             if (exists)
@@ -333,7 +353,8 @@ public class LocalStorageService : IStorageService
             {
                 index = i,
                 type = i < _erasureCoder.DataShards ? "data" : "parity",
-                available = exists
+                available = exists,
+                filename = GetShardFilename(i, metadata.DataShards)
             });
         }
 
