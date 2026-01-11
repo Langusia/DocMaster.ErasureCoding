@@ -121,8 +121,8 @@ public sealed class IsaLErasureCoder : IErasureCoder
         // Rent temporary buffers from ArrayPool
         byte[][] tempBuffers = new byte[_totalShards][];
         GCHandle[] handles = new GCHandle[_totalShards];
-        byte*[] dataPointers = stackalloc byte*[_dataShards];
-        byte*[] parityPointers = stackalloc byte*[_parityShards];
+        byte** dataPointers = stackalloc byte*[_dataShards];
+        byte** parityPointers = stackalloc byte*[_parityShards];
 
         try
         {
@@ -305,8 +305,8 @@ public sealed class IsaLErasureCoder : IErasureCoder
             );
 
             // Reconstruct missing shards
-            byte*[] srcPointers = stackalloc byte*[_dataShards];
-            byte*[] dstPointers = stackalloc byte*[errorCount];
+            byte** srcPointers = stackalloc byte*[_dataShards];
+            byte** dstPointers = stackalloc byte*[errorCount];
 
             // Pin available shards
             for (int i = 0; i < decodeCount; i++)
