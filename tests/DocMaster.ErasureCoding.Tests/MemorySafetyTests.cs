@@ -1,4 +1,5 @@
 using DocMaster.ErasureCoding;
+using Xunit;
 
 namespace DocMaster.ErasureCoding.Tests;
 

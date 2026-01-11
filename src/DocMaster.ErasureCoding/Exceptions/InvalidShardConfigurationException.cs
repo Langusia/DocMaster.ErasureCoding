@@ -1,4 +1,6 @@
-namespace DocMaster.ErasureCoding;
+using System;
+
+namespace DocMaster.ErasureCoding.Exceptions;
 
 /// <summary>
 /// Exception thrown when shard configuration is invalid

@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
 namespace DocMaster.ErasureCoding.TestApi.Services;
 
 public interface IStorageService

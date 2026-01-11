@@ -1,3 +1,4 @@
+using DocMaster.ErasureCoding.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using DocMaster.ErasureCoding.TestApi.Services;
 
