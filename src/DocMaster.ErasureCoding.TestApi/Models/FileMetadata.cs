@@ -1,3 +1,5 @@
+using System;
+
 namespace DocMaster.ErasureCoding.TestApi.Models;
 
 public class FileMetadata
