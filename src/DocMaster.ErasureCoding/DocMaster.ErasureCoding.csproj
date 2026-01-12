@@ -7,27 +7,40 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
 
-    <!-- NuGet Package Metadata -->
+    <!-- NuGet Package Identity -->
     <PackageId>DocMaster.ErasureCoding</PackageId>
     <Version>1.0.0</Version>
+    <!-- Authors and Company -->
     <Authors>DocMaster Team</Authors>
     <Company>DocMaster</Company>
     <Product>DocMaster Erasure Coding Library</Product>
+    <!-- Description (shows on NuGet.org) -->
     <Description>High-performance Reed-Solomon erasure coding library using Intel ISA-L for DocMaster object storage</Description>
+    <!-- Package Metadata -->
     <PackageTags>docmaster;erasure-coding;isa-l;reed-solomon;object-storage</PackageTags>
     <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/yourorg/DocMaster.ErasureCoding</RepositoryUrl>
+    <RepositoryUrl>https://github.com/Langusia/DocMaster.ErasureCoding</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <!-- Build Settings -->
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="System.Memory" Version="4.5.5" />
+    <None Include="..\..\icon.png" Pack="true" PackagePath="\" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
-  <!-- Include runtime folders (README files, not actual binaries) -->
+  <!-- Include Runtime Folders -->
   <ItemGroup>
     <Content Include="runtimes/**/*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <PackagePath>runtimes/</PackagePath>
+      <Pack>true</Pack>
     </Content>
   </ItemGroup>
 </Project>
