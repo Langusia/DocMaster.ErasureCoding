@@ -11,7 +11,7 @@ namespace DocMaster.ErasureCoding;
 /// </summary>
 internal static class IsaLNative
 {
-    private const string LibName = "isal";
+    private const string LibName = "isa-l";
 
     static IsaLNative()
     {
@@ -55,7 +55,7 @@ internal static class IsaLNative
             return "libisal.so.2";
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            return "isal.dll";
+            return "isa-l.dll";
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             return "libisal.dylib";
